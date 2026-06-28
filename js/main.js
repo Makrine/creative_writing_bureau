@@ -35,6 +35,10 @@ function formatDate(dateStr) {
 
 function t(en, ka) { return lang === 'ka' ? ka : en; }
 
+function renderNewlines(text) {
+  return text.replace(/\\n/g, '\n');
+}
+
 function nextId() {
   if (!allPosts.length) return '0001';
   const max = Math.max(...allPosts.map(p => parseInt(p.id, 10)));
@@ -73,7 +77,7 @@ function renderPostList() {
   list.innerHTML = filtered.map(post => {
     // const p = post[lang] || post['en'];
     // take only the first 200 characters of the content for the excerpt
-    var excerpt = post.content.length > 200 ? post.content.slice(0, 200) + '...' : post.content;
+    var excerpt = renderNewlines(post.content.length > 200 ? post.content.slice(0, 200) + '...' : post.content);
 return `
   <article class="post-card" onclick="showPost('${post.id}')">
     <div class="post-id">№${post.id}</div>
@@ -106,7 +110,7 @@ function showPost(id) {
       ${t('Delete','წაშლა')}
     </button>` : ''}
   </div>
-  <div class="post-view-body">${post.content}</div>
+  <div class="post-view-body">${renderNewlines(post.content)}</div>
 `;
   setActiveNav(null);
   scrollTop();
