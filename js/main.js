@@ -67,14 +67,13 @@ function nextId() {
 
 function renderPostList() {
   const list = document.getElementById('post-list');
-   const filtered = allPosts.filter(p => p.lang.toLowerCase() === lang);
-  if (!filtered.length) {
+  if (!allPosts.length) {
     list.innerHTML = `<p style="color:var(--muted);font-size:0.8rem;padding:2rem 0;">
       ${t('No documents filed. Check if there are any in the other language. We could tell you if we tried but we don\'t really care.','დოკუმენტები არ არის. შეამოწმეთ, არის თუ არა რაიმე სხვა ენაზე. ჩვენ შეგვიძლია გითხრათ, რომ ვეცადოთ, მაგრამ არ გვადარდებს.')}
     </p>`;
     return;
   }
-  list.innerHTML = filtered.map(post => {
+  list.innerHTML = allPosts.map(post => {
     // const p = post[lang] || post['en'];
     // take only the first 200 characters of the content for the excerpt
     var excerpt = renderNewlines(post.content.length > 200 ? post.content.slice(0, 200) + '...' : post.content);
@@ -266,17 +265,16 @@ function setLang(l) {
     b.classList.toggle('active', b.dataset.lang === l);
   });
   updateStaticStrings();
-  renderPostList(); // refetch filtered by new lang
+  renderPostList();
 
-
-  // // Re-render current view
+  // Re-render current view with new language
   const homeVisible  = document.getElementById('home-view').style.display !== 'none';
   const postVisible  = document.getElementById('post-view').style.display !== 'none';
   const writeVisible = document.getElementById('write-view').style.display !== 'none';
   const aboutVisible = document.getElementById('about-view').style.display !== 'none';
 
   if (homeVisible)  renderPostList();
-  if (postVisible)  { showHome(); }
+  if (postVisible)  { refreshPostView(); }
   if (writeVisible) renderWriteForm();
   if (aboutVisible) renderAbout();
 }
