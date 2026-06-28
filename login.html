@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Bureau of Creative Writing</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <label for="uname"><b>Email</b></label>
+    <input type="text" id="uname" placeholder="Enter Email" required>
+    <label for="psw"><b>Password</b></label>
+    <input type="password" id="psw" placeholder="Enter Password" required>
+    <button type="button" onclick="login()">Login</button>
+    <p id="error-msg" style="color:red;font-size:0.8rem;"></p>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://oyqktknmskosttwkktng.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95cWt0a25tc2tvc3R0d2trdG5nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2NDg5MDcsImV4cCI6MjA5ODIyNDkwN30.FgNLX-2-QZ1jMxBFeSLLIKQ-ocfWfdyGLnqfQlOITy0';
+
+    // If already logged in, go straight to the blog
+    if (localStorage.getItem('bcw-token')) {
+      window.location.href = './index.html';
+    }
+
+    async function login() {
+      const email = document.getElementById('uname').value.trim();
+      const password = document.getElementById('psw').value;
+
+      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await res.json();
+
+      if (data.access_token) {
+        localStorage.setItem('bcw-token', data.access_token);
+        window.location.href = './index.html';
+      } else {
+        document.getElementById('error-msg').textContent = 'Invalid email or password.';
+      }
+    }
+
+    // Allow pressing Enter to submit
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') login();
+    });
+  </script>
+</body>
+</html>

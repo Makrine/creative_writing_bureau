@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bureau of Creative Writing</title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-stamp">
+      <div class="stamp-left">
+        <h1 class="site-title" onclick="showHome()">Bureau of<br>Creative Writing</h1>
+        <p class="site-subtitle"></p>
+      </div>
+      <div class="stamp-right">
+        <span>STATUS: OPERATIONAL</span>
+        <span id="header-time">--:--:--</span>
+      </div>
+    </div>
+  </header>
+
+  <nav class="site-nav">
+    <a id="nav-home" class="active" onclick="showHome()">Registry</a>
+    <span class="nav-divider">/</span>
+    <a id="nav-write" onclick="showWrite()">+ New story</a>
+    <div class="nav-spacer"></div>
+    <div class="lang-toggle">
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ka">KA</button>
+    </div>
+  </nav>
+
+  <main class="site-main">
+
+    <div id="home-view">
+      <div class="section-eyebrow">All filed documents — sorted by date of submission</div>
+      <div id="post-list">
+        <p style="color:var(--muted);font-size:0.8rem;padding:2rem 0;">Loading…</p>
+      </div>
+    </div>
+
+    <div id="post-view"></div>
+    <div id="write-view"></div>
+
+  </main>
+
+  <footer class="site-footer">
+
+  </footer>
+
+  <script src="./js/main.js"></script>
+</body>
+</html>
