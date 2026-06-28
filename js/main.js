@@ -253,6 +253,11 @@ function setLang(l) {
   if (aboutVisible) renderAbout();
 }
 
+async function logout() {
+  localStorage.removeItem('bcw-token');
+  window.location.href = './index.html';
+}
+
 async function deletePost(id) {
   if (!confirm(t('Delete this story?', 'წაშალო ეს ისტორია?'))) return;
 
@@ -361,7 +366,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const navLogin = document.querySelector('.nav-login');
   if (navLogin) {
     navLogin.innerHTML = localStorage.getItem('bcw-token') ? `
-      <div>Logged in</div>
+      <button class="btn" onclick="logout()">Logout</button>
     ` : `
       <button class="btn" onclick="window.location.href='login.html'">Login</button>
     `;
