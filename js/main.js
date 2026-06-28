@@ -98,13 +98,16 @@ function showPost(id) {
   const view = document.getElementById('post-view');
   view.style.display = 'block';
   view.innerHTML = `
-    <div class="post-view-header">
-      <a class="back-link" onclick="showHome()">← ${t('Back to registry','სიაში დაბრუნება')}</a>
-      <div class="post-view-id">${t('Filed','შეტანილია')} ${formatDate(post.date)} — №${post.id}</div>
-      <h1 class="post-view-title">${post.title}</h1>
-    </div>
-    <div class="post-view-body">${post.content}</div>
-  `;
+  <div class="post-view-header">
+    <a class="back-link" onclick="showHome()">← ${t('Back to registry','სიაში დაბრუნება')}</a>
+    <div class="post-view-id">${t('Filed','შეტანილია')} ${formatDate(post.date)} — №${post.id}</div>
+    <h1 class="post-view-title">${post.title}</h1>
+    ${localStorage.getItem('bcw-token') ? `<button class="btn" style="margin-top:1rem;" onclick="deletePost(${post.id})">
+      ${t('Delete','წაშლა')}
+    </button>` : ''}
+  </div>
+  <div class="post-view-body">${post.content}</div>
+`;
   setActiveNav(null);
   scrollTop();
 }
@@ -225,6 +228,26 @@ function setLang(l) {
   if (writeVisible) renderWriteForm();
 }
 
+async function deletePost(id) {
+  if (!confirm(t('Delete this story?', 'წაშალო ეს ისტორია?'))) return;
+
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/posts?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${localStorage.getItem('bcw-token')}`,
+    }
+  });
+
+  if (res.ok) {
+    allPosts = allPosts.filter(p => p.id !== id);
+    showHome();
+  } else {
+    alert(t('Could not delete.', 'წაშლა ვერ მოხდა.'));
+  }
+}
+
+
 function refreshPostView() {
   // Extract id from the view's content
   const idEl = document.querySelector('.post-view-id');
@@ -300,5 +323,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const navWrite = document.getElementById('nav-write');
   if (navWrite) {
     navWrite.style.display = localStorage.getItem('bcw-token') ? '' : 'none';
+  }
+  const navLogin = document.querySelector('.nav-login');
+  if (navLogin) {
+    navLogin.innerHTML = localStorage.getItem('bcw-token') ? `
+      <div>Logged in</div>
+    ` : `
+      <button class="btn" onclick="window.location.href='login.html'">Login</button>
+    `;
   }
 });
