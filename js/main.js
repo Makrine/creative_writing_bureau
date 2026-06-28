@@ -101,19 +101,45 @@ function showPost(id) {
   hide('home-view'); hide('write-view');
   const view = document.getElementById('post-view');
   view.style.display = 'block';
+  
+  // Update URL without reloading
+  const newUrl = `${window.location.pathname}?post=${id}`;
+  window.history.pushState({ postId: id }, '', newUrl);
+  
   view.innerHTML = `
   <div class="post-view-header">
     <a class="back-link" onclick="showHome()">← ${t('Back to registry','სიაში დაბრუნება')}</a>
     <div class="post-view-id">${t('Filed','შეტანილია')} ${formatDate(post.date)} — №${post.id}</div>
     <h1 class="post-view-title">${post.title}</h1>
-    ${localStorage.getItem('bcw-token') ? `<button class="btn" style="margin-top:1rem;" onclick="deletePost(${post.id})">
-      ${t('Delete','წაშლა')}
-    </button>` : ''}
+    <div style="margin-top:1rem; display:flex; gap:0.5rem; flex-wrap:wrap;">
+      <button class="btn" onclick="sharePost(${post.id})">
+        ${t('Share','გაზიარება')}
+      </button>
+      ${localStorage.getItem('bcw-token') ? `<button class="btn" onclick="deletePost(${post.id})">
+        ${t('Delete','წაშლა')}
+      </button>` : ''}
+    </div>
   </div>
   <div class="post-view-body">${renderNewlines(post.content)}</div>
 `;
   setActiveNav(null);
   scrollTop();
+}
+
+function sharePost(id) {
+  const url = `${window.location.origin}${window.location.pathname}?post=${id}`;
+  navigator.clipboard.writeText(url).then(() => {
+    alert(t('Link copied to clipboard!','ბმული კოპირებულია!'));
+  }).catch(() => {
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = url;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert(t('Link copied to clipboard!','ბმული კოპირებულია!'));
+  });
 }
 
 // ---- SHOW HOME ----
@@ -122,6 +148,8 @@ function showHome() {
   hide('post-view'); hide('write-view'); hide('about-view');
   show('home-view');
   setActiveNav('nav-home');
+  // Clear URL parameter
+  window.history.pushState({}, '', window.location.pathname);
   scrollTop();
 }
 
@@ -370,5 +398,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     ` : `
       <button class="btn" onclick="window.location.href='login.html'">Login</button>
     `;
+  }
+  
+  // Check URL for shared post
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get('post');
+  if (postId && allPosts.find(p => String(p.id) === String(postId))) {
+    showPost(postId);
+  }
+});
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', (event) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get('post');
+  if (postId && allPosts.find(p => String(p.id) === String(postId))) {
+    showPost(postId);
+  } else {
+    showHome();
   }
 });
