@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-3G7G8SYZ0D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-3G7G8SYZ0D');
+</script>
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bureau of Creative Writing</title>
@@ -23,6 +33,7 @@
 
   <nav class="site-nav">
     <a id="nav-home" class="active" onclick="showHome()">Registry</a>
+    <a id="nav-about" onclick="showAbout()">About</a>
     <span class="nav-divider">/</span>
     <a id="nav-write" onclick="showWrite()">+ New story</a>
     <div class="nav-spacer"></div>
@@ -44,7 +55,7 @@
 
     <div id="post-view"></div>
     <div id="write-view"></div>
-
+    <div id="about-view"></div>
   </main>
 
   <footer class="site-footer">

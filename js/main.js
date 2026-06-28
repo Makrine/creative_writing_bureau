@@ -119,16 +119,35 @@ function showPost(id) {
 // ---- SHOW HOME ----
 
 function showHome() {
-  hide('post-view'); hide('write-view');
+  hide('post-view'); hide('write-view'); hide('about-view');
   show('home-view');
   setActiveNav('nav-home');
   scrollTop();
 }
 
+function showAbout() {
+  hide('post-view'); hide('write-view'); hide('home-view');
+  show('about-view');
+  renderAbout();
+  setActiveNav('nav-about');
+  scrollTop();
+}
+
+
+function renderAbout() {
+  const view = document.getElementById('about-view');
+  view.innerHTML = `
+    <h1>${t('About the Bureau of Creative Writing','შემოქმედებითი წერის ბიუროს შესახებ')}</h1>
+    <p>${t('Here you can find stories written by our contributors. We have many contributors who share their creative works with us. However, there is no way to see the author of each story. This is in order to reduce the feeling of competition between them and definitely not because we have only one contributor. As said before, we have many of them!','აქ შეგიძლიათ იხილოთ ჩვენი მრავალი კონტრობუტორის მიერ დაწერილი ისტორიები. ჩვენ უამრავი კონტრიბუტორი გვყავს, რომლებიც თავიათ შემოქმედებით ნაშრომებს გვიზიარებს. თუმცა თქვენ ვერ იხილავთ მათ სახელებს ისტორიების გვერდებზე, რადგან არ გვინდა ერთმანეთს ეჯიბრებოდნენ. აღნიშნული ფაქტი, რა თქმა უნდა, არანაირად არ არის იმის გამო, რომ მხოლოდ ერთი კონტრიბუტორი გვყავს. როგორეც ვახსენე, ჩვენ მრავალი გვყავს! ')}</p>
+    <p>${t('We have stories in both English and Georgian.','ჩვენ გვაქვს ისტორიები ინგლისურ და ქართულ ენებზე.')}</p>
+    <p>${t('If you are logged in, you can also submit new stories and delete existing ones.','თუ თქვენ შეხვალთ სისტემაში, ასევე შეგიძლიათ ახალი ისტორიების შეტანა და არსებული ისტორიების წაშლა.')}</p>
+    <p>${t('In order to have an account, please contact us by a pigeon to the address we won\'t disclose.','ანგარიშის შესაქმნელად, გთხოვთ დაგვიკავშირდით მტრედის მეშვეობით ჩვენს მისამართზე, რომელსაც ჩვენ არ განვაცხადებთ.')}</p>
+  `;
+} 
 // ---- SHOW WRITE ----
 
 function showWrite() {
-  hide('post-view'); hide('home-view');
+  hide('post-view'); hide('home-view'); hide('about-view');
   const view = document.getElementById('write-view');
   view.style.display = 'block';
   renderWriteForm();
@@ -226,10 +245,12 @@ function setLang(l) {
   const homeVisible  = document.getElementById('home-view').style.display !== 'none';
   const postVisible  = document.getElementById('post-view').style.display !== 'none';
   const writeVisible = document.getElementById('write-view').style.display !== 'none';
+  const aboutVisible = document.getElementById('about-view').style.display !== 'none';
 
   if (homeVisible)  renderPostList();
   if (postVisible)  { showHome(); }
   if (writeVisible) renderWriteForm();
+  if (aboutVisible) renderAbout();
 }
 
 async function deletePost(id) {
@@ -261,6 +282,12 @@ function refreshPostView() {
 }
 
 function updateStaticStrings() {
+  const titles = {
+    en: 'Bureau of Creative Writing',
+    ka: 'შემოქმედებითი წერის ბიურო'
+  };
+  const title_el = document.querySelector('.site-title');
+  if (title_el) title_el.textContent = titles[lang];
   const subtitles = {
     en: 'Official repository of random stories, observations, and minor incidents',
     ka: 'შემთხვევითი ისტორიების, დაკვირვებებისა და მცირე ინციდენტების ოფიციალური საცავი '
@@ -279,11 +306,14 @@ function updateStaticStrings() {
     en: '<span>This footer is required. Its purpose is unclear.</span>',
     ka: '<span>ეს ქვედა კოლონტიტული აუცილებელია. მისი დანიშნულება გაურკვეველია.</span>'
   }[lang];
-
+  
   const navHome  = document.getElementById('nav-home');
   const navWrite = document.getElementById('nav-write');
+  const navAbout = document.getElementById('nav-about');
+
   if (navHome)  navHome.textContent  = t('Registry', 'საცავი');
-if (navWrite) navWrite.textContent = t('+ New story', '+ ახალი ისტორია');
+  if (navWrite) navWrite.textContent = t('+ New story', '+ ახალი ისტორია');
+  if (navAbout) navAbout.textContent = t('About', 'ჩვენ შესახებ');
 }
 
 // ---- HELPERS ----
